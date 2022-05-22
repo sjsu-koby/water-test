@@ -10,23 +10,14 @@ var water;
 var gameOver;
 var stickImg, waterImg, groundImg, bgImg, bgS;
 var gameState = 'title';
-var platforms = [];
-var changeDirection = 0;
-var y;
-var s;
+var platform1;
+var platform2;
 
 function setup() {
   createCanvas(700, 900);
-  changeDirection = false;
-  s = 0;
-  y = 1;
-  for (let i = 0; i <= 5; i++) {
-    platforms[i] = new platform(
-      random(1, 10) * width * 0.4,
-      random(1, 10) * -height * 0.03,
-      random(4) * 0.8
-    );
-  }
+
+  platform1 = new Platform(width * .8, height * .8, 10);
+  platform2 = new Platform(width * .6, height * .7, -20)
   stickImg = loadImage('assets/stick.png');
   waterImg = loadImage('assets/water.png');
   groundImg = loadImage('assets/flappy_ground.png');
@@ -87,12 +78,15 @@ function titleScreen() {
 
 function gameStage1() {
 
-  if (gameOver && keyWentDown('x'))
+  platform1.display();
+  platform2.display();
+
+  if (gameOver && keyWentDown(' '))
     newGame();
 
   if (!gameOver) {
 
-    if (keyWentDown('x'))
+    if (keyWentDown(' '))
       stick.velocity.y = JUMP;
 
     stick.velocity.y += GRAVITY;
@@ -104,9 +98,9 @@ function gameStage1() {
       die();
 
     //spawn waters
-    if (frameCount % 120 == 0) {
-      var waterH = (-80);
-      var water = createSprite(stick.position.x + width + random(width), GROUND_Y - waterH / 3 + 1 + 250, 80, waterH);
+    if (frameCount % 100 == 0) {
+      var waterH = (-1200);
+      var water = createSprite(stick.position.y + height + random(height), GROUND_Y + 250, 80);
       water.addImage(waterImg);
       waters.add(water);
 
@@ -114,7 +108,7 @@ function gameStage1() {
 
     //get rid of passed waters
     for (var i = 0; i < waters.length; i++)
-      if (waters[i].position.x < stick.position.x - width / 2)
+      if (waters[i].position.y < stick.position.y - width / 2)
         waters[i].remove();
   }
 
@@ -126,17 +120,12 @@ function gameStage1() {
 
   background(0, 204, 255);
   camera.off();
-  for (i = 0; i < platforms.length; i++) {
-    platforms[i].display();
-    platforms[i].move();
-  }
   background(220);
   camera.on();
 
   drawSprite(ground);
   drawSprites(waters);
   drawSprite(stick);
-
 }
 
 function die() {

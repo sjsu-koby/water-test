@@ -7,16 +7,7 @@ class Platform {
 
   display() {
     push();
-    translate(width * 0.4, height * 0.4);
-    strokeWeight(0);
-    fill(250);
-    scale(this.size);
-    rect(
-      this.platformx + width * 0.17,
-      this.platformy + height * 0.18,
-      width * 0.14,
-      width * 0.11
-    );
+    loadImage('assets/platform.png');
     pop();
   }
 
